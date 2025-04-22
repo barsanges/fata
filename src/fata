@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# This file is licensed under the GPLv3. Please see LICENSE for more information.
+
+set -o pipefail
+set -o nounset
+if [[ "${TRACE-0}" == "1" ]]; then
+    set -o xtrace
+fi
+
+cmd_help()  {
+    cmd_version
+    echo
+    cat <<-_EOF
+Commandes :
+    fata help
+        Affiche ce texte.
+    fata version
+        Affiche la version utilisée.
+
+https://github.com/barsanges/fata
+_EOF
+}
+
+cmd_version()  {
+    echo "Fata 0.0.1"
+}
+
+case "$1" in
+	help|--help) shift;		cmd_help "$@" ;;
+	version|--version) shift;	cmd_version "$@" ;;
+esac
+exit 0
