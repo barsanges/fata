@@ -26,8 +26,14 @@ cmd_version()  {
     echo "Fata 0.0.1"
 }
 
+cmd_unknown() {
+    echo "Unknown command '$*'" >&2
+    exit 1
+}
+
 case "$1" in
 	help|--help) shift;		cmd_help "$@" ;;
 	version|--version) shift;	cmd_version "$@" ;;
+	*)				cmd_unknown "$@" ;;
 esac
 exit 0
