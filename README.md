@@ -72,5 +72,5 @@ périodes du focus `A`. En revanche, une période définie dans un focus
 L'essentiel de l'utilisation de Fata se traduit par la rédaction des
 fichiers Markdown. Toutefois, il est aussi possible de modifier à la
 main les fichiers `banque.json` (par exemple pour ajouter ou supprimer
-des questions génériques) et `questions-posées.json` (par exemple
-parce qu'on a incidemment déjà répondu à une question),
+des questions génériques) et `questions-posées.json` (par exemple pour
+ajouter une question à laquelle on a incidemment déjà répondu).
