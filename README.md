@@ -31,7 +31,8 @@ identifier des focus, des périodes et des mots-clefs :
 
 * les *focus* correspondent aux titres de premier niveau (`#`) dans
   les Markdown ; un focus est typiquement un peuple ou une étendue
-  géographique ; en principe, chaque Markdown correspond à un focus ;
+  géographique ; chaque Markdown doit contenir exactement un focus,
+  défini à la première ligne du fichier ;
 
 * les *périodes* correspondent aux titres de deuxième niveau (`##`)
   dans les Markdown ; ce sont des périodes historiques ;
