@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# This file is licensed under the GPLv3. Please see LICENSE for more information.
+# This file is licensed under the GPLv3. Please see LICENSE for more
+# information.
 
 set -o pipefail
 set -o nounset
@@ -27,7 +28,7 @@ cmd_version()  {
 }
 
 cmd_unknown() {
-    echo "Unknown command '$*'" >&2
+    echo "Commande inconnue '$*'" >&2
     exit 1
 }
 
