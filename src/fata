@@ -9,11 +9,25 @@ if [[ "${TRACE-0}" == "1" ]]; then
     set -o xtrace
 fi
 
+BANK="banque.json"
+QUESTIONS="questions-posées.json"
+
+check_dir() {
+    if ! [[ -f ${BANK} ]] || ! [[ -f ${QUESTIONS} ]]; then
+	echo "${PWD} ne contient pas de données pour Fata"
+	echo "Utilisez 'fata init' pour le transformer en un répertoire exploitable par Fata"
+	exit 1
+    fi
+}
+
 cmd_help()  {
     cmd_version
     echo
     cat <<-_EOF
 Commandes :
+    fata list (periods|focuses|keywords)
+        Liste les périodes, les focus ou les mots-clefs actuellement définis
+        dans le projet.
     fata help
         Affiche ce texte.
     fata version
@@ -27,6 +41,10 @@ cmd_version()  {
     echo "Fata 0.0.1"
 }
 
+cmd_list()  {
+    echo "TODO"
+}
+
 cmd_unknown() {
     echo "Commande inconnue '$*'" >&2
     exit 1
@@ -35,6 +53,7 @@ cmd_unknown() {
 case "$1" in
 	help|--help) shift;		cmd_help "$@" ;;
 	version|--version) shift;	cmd_version "$@" ;;
+	list) shift;                    check_dir; cmd_list "$@" ;;
 	*)				cmd_unknown "$@" ;;
 esac
 exit 0
