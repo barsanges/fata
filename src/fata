@@ -51,6 +51,11 @@ cmd_unknown() {
     exit 1
 }
 
+if [[ -z "${1:-}" ]]; then
+    cmd_help "@"
+    exit 0
+fi
+
 case "$1" in
 	help|--help) shift;		cmd_help "$@" ;;
 	version|--version) shift;	cmd_version "$@" ;;
