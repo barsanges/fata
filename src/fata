@@ -47,6 +47,7 @@ cmd_list()  {
 
 cmd_unknown() {
     echo "Commande inconnue '$*'" >&2
+    echo "Tapez 'fata help' pour voir la liste des commandes disponibles" >&2
     exit 1
 }
 
