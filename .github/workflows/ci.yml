@@ -10,5 +10,8 @@ jobs:
 
       - uses: extractions/setup-just@v3
 
+      - name: Linter
+        run: just check
+
       - name: Test
         run: just test
