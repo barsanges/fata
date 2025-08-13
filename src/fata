@@ -14,8 +14,8 @@ QUESTIONS="questions-posées.json"
 
 check_dir() {
     if ! [[ -f ${BANK} ]] || ! [[ -f ${QUESTIONS} ]]; then
-	echo "${PWD} ne contient pas de données pour Fata"
-	echo "Utilisez 'fata init' pour le transformer en un répertoire exploitable par Fata"
+	echo "${PWD} ne contient pas de données pour Fata" >&2
+	echo "Utilisez 'fata init' pour le transformer en un répertoire exploitable par Fata" >&2
 	exit 1
     fi
 }
