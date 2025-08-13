@@ -10,6 +10,8 @@ jobs:
 
       - uses: extractions/setup-just@v3
 
+      - uses: pandoc/actions/setup@v1
+
       - name: Linter
         run: just check
 
