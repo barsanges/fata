@@ -8,9 +8,10 @@ setup() {
     DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )"
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
+    cd "$DIR"
 }
 
-@test "fail in a non-Fata directory" {
+@test "'fata list' fails in a non-Fata directory" {
     run fata list
     assert_failure
 }
