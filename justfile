@@ -1,3 +1,6 @@
+# En cas de problème à l'exécution, se référer à :
+#     https://github.com/casey/just/issues/2702
+
 check:
     shellcheck src/* --color=always --enable=all --severity=style
 
