@@ -20,6 +20,26 @@ check_dir() {
     fi
 }
 
+list_focuses() {
+    tmp=""
+    shopt -s nullglob
+    for file in *.md; do
+	data="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 1 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]')"
+	number=$(echo -l "${data}" | wc -l)
+	if [[ ${number} -ne 1 ]]; then
+	    echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
+	    exit 1
+	fi
+	tmp+="${data}\n"
+    done
+    shopt -u nullglob
+    if [[ "${tmp}" != "" ]]; then
+	# shellcheck disable=SC2059
+	res=$(printf "${tmp}" | sort)
+	printf "%s\n" "${res}"
+    fi
+}
+
 cmd_help()  {
     cmd_version
     echo
@@ -42,7 +62,15 @@ cmd_version()  {
 }
 
 cmd_list()  {
-    echo "TODO"
+    if [[ -z "${1:-}" ]]; then
+	echo "Vous devez fournir un argument à 'fata list' : 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2
+	exit 1
+    fi
+
+    case "$1" in
+	focuses) shift;	  list_focuses ;;
+	*)                echo "Argument inconnu '$*'" >&2 ; echo "Les commandes admissibles sont 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2 ; exit 1 ;;
+    esac
 }
 
 cmd_unknown() {

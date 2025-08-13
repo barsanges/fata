@@ -12,6 +12,6 @@ setup() {
 }
 
 @test "'fata list' fails in a non-Fata directory" {
-    run fata list
+    run fata list focuses
     assert_failure
 }
