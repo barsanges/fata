@@ -14,7 +14,8 @@ setup() {
 @test "'fata list focuses' returns every focus in the directory" {
     run fata list focuses
     assert_output "La république des sciapodes
-Les cynocéphales"
+Les cynocéphales
+L’empire des cyclopes"
 }
 
 @test "'fata list periods' returns every period in the directory" {
