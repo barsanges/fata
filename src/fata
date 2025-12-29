@@ -21,7 +21,7 @@ check_dir() {
 }
 
 list_focuses() {
-    tmp=""
+    res=""
     shopt -s nullglob
     for file in *.md; do
 	data="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 1 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]')"
@@ -30,13 +30,11 @@ list_focuses() {
 	    echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
 	    exit 1
 	fi
-	tmp+="${data}\n"
+	res+="${data}\n"
     done
     shopt -u nullglob
-    if [[ "${tmp}" != "" ]]; then
-	# shellcheck disable=SC2059
-	res=$(printf "${tmp}" | sort)
-	printf "%s\n" "${res}"
+    if [[ "${res}" != "" ]]; then
+	printf "${res}\n"
     fi
 }
 
