@@ -11,12 +11,12 @@ setup() {
     cd "$DIR"
 }
 
-@test "'fata list focuses' fails if there are several focuses within the same file" {
-    run fata list focuses
-    assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+@test "'fata list focus' fails if the periods are mixed up" {
+    run fata list focus
+    assert_output "Erreur : les périodes de cynocéphales.md (Période archaïque / Période classique) ne correspondent pas à celles de cyclopes.md ()"
 }
 
-@test "'fata list periods' fails if there are several focuses within the same file" {
+@test "'fata list periods' fails if the periods are mixed up" {
     run fata list periods
-    assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+    assert_output "Erreur : les périodes de cynocéphales.md (Période archaïque / Période classique) ne correspondent pas à celles de cyclopes.md ()"
 }

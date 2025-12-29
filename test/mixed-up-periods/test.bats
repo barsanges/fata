@@ -11,10 +11,9 @@ setup() {
     cd "$DIR"
 }
 
-@test "'fata list focuses' returns every focus in the directory" {
+@test "'fata list focuses' fails if the periods are mixed up" {
     run fata list focuses
-    assert_output "Les cynocéphales
-La république des sciapodes"
+    assert_output "Erreur : les périodes de sciapodes.md (Période archaïque / Période classique) ne correspondent pas à celles de cynocéphales.md (Période héroïque / Période classique)"
 }
 
 @test "'fata list periods' fails if the periods are mixed up" {

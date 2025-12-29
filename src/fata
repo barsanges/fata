@@ -20,42 +20,60 @@ check_dir() {
     fi
 }
 
+get_focus() {
+    pandoc "$1" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 1 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]'
+}
+
+get_periods() {
+    pandoc "$1" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 2 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]'
+}
+
+check_md() {
+   refperiods=""
+   reffile=""
+   refset=false
+   shopt -s nullglob
+   for file in *.md; do
+       focus=$(get_focus "${file}")
+       number=$(echo -l "${focus}" | wc -l)
+       if [[ ${number} -ne 1 ]]; then
+	   echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
+	   exit 1
+       fi
+       periods=$(get_periods "${file}")
+       if [[ "${refset}" = false ]]; then
+	   refperiods="${periods}"
+	   reffile="${file}"
+	   refset=true
+       elif [[ "${refperiods}" != "${periods}" ]]; then
+	   expected=$(readarray -t arr <<< "${refperiods}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
+	   actual=$(readarray -t arr <<< "${periods}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
+	   echo "Erreur : les périodes de ${file} (${actual}) ne correspondent pas à celles de ${reffile} (${expected})" >&2
+	   exit 1
+       fi
+   done
+}
+
 list_focuses() {
     res=""
     shopt -s nullglob
     for file in *.md; do
-	data="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 1 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]')"
-	number=$(echo -l "${data}" | wc -l)
-	if [[ ${number} -ne 1 ]]; then
-	    echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
-	    exit 1
-	fi
+	data=$(get_focus "${file}")
 	res+="${data}\n"
     done
-    shopt -u nullglob
     if [[ "${res}" != "" ]]; then
 	# shellcheck disable=SC2059
-	printf "${res}\n"
+	printf "${res}"
     fi
 }
 
 list_periods() {
     res=""
-    reffile=""
     shopt -s nullglob
     for file in *.md; do
-	data="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 2 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]')"
-	if [[ "${res}" = "" ]]; then
-	    res="${data}"
-	    reffile="${file}"
-	elif [[ "${res}" != "${data}" ]]; then
-	    expected=$(readarray -t arr <<< "${res}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
-	    actual=$(readarray -t arr <<< "${data}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
-	    echo "Erreur : les périodes de ${file} (${actual}) ne correspondent pas à celles de ${reffile} (${expected})" >&2
-	    exit 1
-	fi
+	res=$(get_periods "${file}")
+	break
     done
-    shopt -u nullglob
     if [[ "${res}" != "" ]]; then
 	# shellcheck disable=SC2059
 	printf "${res}\n"
@@ -89,6 +107,7 @@ cmd_list()  {
 	exit 1
     fi
 
+    check_md
     case "$1" in
 	focuses) shift;	  list_focuses ;;
 	periods) shift;	  list_periods ;;
