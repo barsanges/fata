@@ -16,3 +16,9 @@ setup() {
     assert_output "La république des sciapodes
 Les cynocéphales"
 }
+
+@test "'fata list periods' returns every period in the directory" {
+    run fata list periods
+    assert_output "Période archaïque
+Période classique"
+}

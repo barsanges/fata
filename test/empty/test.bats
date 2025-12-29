@@ -15,3 +15,8 @@ setup() {
     run fata list focuses
     assert_output ""
 }
+
+@test "'fata list periods' returns nothing if there is no focus" {
+    run fata list periods
+    assert_output ""
+}

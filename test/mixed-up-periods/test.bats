@@ -13,10 +13,11 @@ setup() {
 
 @test "'fata list focuses' returns every focus in the directory" {
     run fata list focuses
-    assert_output "Les cynocéphales"
+    assert_output "La république des sciapodes
+Les cynocéphales"
 }
 
 @test "'fata list periods' returns every period in the directory" {
     run fata list periods
-    assert_output "Période archaïque"
+    assert_output "Erreur : les périodes de sciapodes.md (Période archaïque / Période classique) ne correspondent pas à celles de cynocéphales.md (Période héroïque / Période classique)"
 }
