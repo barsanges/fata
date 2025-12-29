@@ -61,12 +61,10 @@ et ne la reposera plus.
 
 ### Chronologie
 
-La chronologie est constituée par la concaténation de l'ensemble
-des périodes définies dans les focus. Dit autrement, le découpage en
-périodes historiques est commun à l'ensemble des focus : on ne peut
-pas avoir une période dans le focus `B` qui serait à cheval sur deux
-périodes du focus `A`. En revanche, une période définie dans un focus
-`A` peut tout à fait ne pas être définie dans un focus `B`.
+La chronologie est commune à tous les focus, qui doivent définir
+exactement les mêmes périodes, dans le même ordre. On ne peut donc
+notamment pas avoir une période qui serait définie dans un focus `A`
+mais pas dans un focus `B`.
 
 ### Modification des fichiers JSON
 

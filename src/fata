@@ -40,6 +40,28 @@ list_focuses() {
     fi
 }
 
+list_periods() {
+    res=""
+    reffile=""
+    shopt -s nullglob
+    for file in *.md; do
+	data="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Header" and ( .c | .[0] == 2 ) ) ) | map( .c | .[2] | map( if .t == "Str" then .c else " " end ) | add) | .[]')"
+	if [[ "${res}" = "" ]]; then
+	    res="${data}"
+	    reffile="${file}"
+	elif [[ "${res}" != "${data}" ]]; then
+	    expected=$(readarray -t arr <<< "${res}"; printf -v delim  "%s / " "${arr[@]}"; echo ${delim% / })
+	    actual=$(readarray -t arr <<< "${data}"; printf -v delim  "%s / " "${arr[@]}"; echo ${delim% / })
+	    echo "Erreur : les périodes de ${file} (${actual}) ne correspondent pas à celles de ${reffile} (${expected})" >&2
+	    exit 1
+	fi
+    done
+    shopt -u nullglob
+    if [[ "${res}" != "" ]]; then
+	printf "${res}\n"
+    fi
+}
+
 cmd_help()  {
     cmd_version
     echo
@@ -69,6 +91,7 @@ cmd_list()  {
 
     case "$1" in
 	focuses) shift;	  list_focuses ;;
+	periods) shift;	  list_periods ;;
 	*)                echo "Argument inconnu '$*'" >&2 ; echo "Les commandes admissibles sont 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2 ; exit 1 ;;
     esac
 }
