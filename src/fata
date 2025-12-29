@@ -34,6 +34,7 @@ list_focuses() {
     done
     shopt -u nullglob
     if [[ "${res}" != "" ]]; then
+	# shellcheck disable=SC2059
 	printf "${res}\n"
     fi
 }
@@ -48,14 +49,15 @@ list_periods() {
 	    res="${data}"
 	    reffile="${file}"
 	elif [[ "${res}" != "${data}" ]]; then
-	    expected=$(readarray -t arr <<< "${res}"; printf -v delim  "%s / " "${arr[@]}"; echo ${delim% / })
-	    actual=$(readarray -t arr <<< "${data}"; printf -v delim  "%s / " "${arr[@]}"; echo ${delim% / })
+	    expected=$(readarray -t arr <<< "${res}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
+	    actual=$(readarray -t arr <<< "${data}"; printf -v delim  "%s / " "${arr[@]}"; echo "${delim% / }")
 	    echo "Erreur : les périodes de ${file} (${actual}) ne correspondent pas à celles de ${reffile} (${expected})" >&2
 	    exit 1
 	fi
     done
     shopt -u nullglob
     if [[ "${res}" != "" ]]; then
+	# shellcheck disable=SC2059
 	printf "${res}\n"
     fi
 }
