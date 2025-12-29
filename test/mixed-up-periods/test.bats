@@ -17,7 +17,7 @@ setup() {
 La république des sciapodes"
 }
 
-@test "'fata list periods' returns every period in the directory" {
+@test "'fata list periods' fails if the periods are mixed up" {
     run fata list periods
     assert_output "Erreur : les périodes de sciapodes.md (Période archaïque / Période classique) ne correspondent pas à celles de cynocéphales.md (Période héroïque / Période classique)"
 }
