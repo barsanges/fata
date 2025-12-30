@@ -14,14 +14,17 @@ setup() {
 @test "'fata list focuses' fails if there are several focuses within the same file" {
     run fata list focuses
     assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+    assert_failure
 }
 
 @test "'fata list periods' fails if there are several focuses within the same file" {
     run fata list periods
     assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+    assert_failure
 }
 
 @test "'fata list keywords' fails if there are several focuses within the same file" {
     run fata list keywords
     assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+    assert_failure
 }
