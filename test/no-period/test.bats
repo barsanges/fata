@@ -20,3 +20,8 @@ setup() {
     run fata list periods
     assert_output ""
 }
+
+@test "'fata list keywords' returns every keyword in the directory" {
+    run fata list keywords
+    assert_output "temple d’Apollon"
+}

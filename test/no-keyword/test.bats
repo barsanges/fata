@@ -13,23 +13,15 @@ setup() {
 
 @test "'fata list focuses' returns every focus in the directory" {
     run fata list focuses
-    assert_output "L’empire des cyclopes
-Les cynocéphales
-La république des sciapodes"
+    assert_output "Les cynocéphales"
 }
 
 @test "'fata list periods' returns every period in the directory" {
     run fata list periods
-    assert_output "Période archaïque
-Période classique"
+    assert_output "Période archaïque"
 }
 
-@test "'fata list keywords' returns every keyword in the directory" {
+@test "'fata list keywords' returns nothing if there is no keyword in the directory" {
     run fata list keywords
-    assert_output "Akhilleus
-Hélios
-Hèphaistos
-illustre Boiteux des deux pieds
-Okéanos
-Pèléide"
+    assert_output ""
 }

@@ -20,3 +20,8 @@ setup() {
     run fata list periods
     assert_output ""
 }
+
+@test "'fata list keywords' returns nothing if there is no focus" {
+    run fata list keywords
+    assert_output ""
+}

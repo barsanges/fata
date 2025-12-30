@@ -20,3 +20,8 @@ setup() {
     run fata list periods
     assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
 }
+
+@test "'fata list keywords' fails if there are several focuses within the same file" {
+    run fata list keywords
+    assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+}

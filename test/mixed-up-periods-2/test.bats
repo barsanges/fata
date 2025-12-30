@@ -20,3 +20,8 @@ setup() {
     run fata list periods
     assert_output "Erreur : les périodes de cynocéphales.md (Période archaïque / Période classique) ne correspondent pas à celles de cyclopes.md ()"
 }
+
+@test "'fata list keywords' fails if the periods are mixed up" {
+    run fata list keywords
+    assert_output "Erreur : les périodes de cynocéphales.md (Période archaïque / Période classique) ne correspondent pas à celles de cyclopes.md ()"
+}
