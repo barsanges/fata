@@ -35,8 +35,14 @@ check_md() {
    shopt -s nullglob
    for file in *.md; do
        focus=$(get_focus "${file}")
+       if [[ "${focus}" = "" ]]; then
+	   # Le fichier ne contient aucun focus.
+	   echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
+	   exit 1
+       fi
        number=$(echo -l "${focus}" | wc -l)
        if [[ ${number} -ne 1 ]]; then
+	   # Le fichier contient plusieurs focus.
 	   echo "Erreur : le fichier ${file} doit contenir exactement un focus" >&2
 	   exit 1
        fi
