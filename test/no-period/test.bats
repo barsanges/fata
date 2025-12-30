@@ -16,7 +16,7 @@ setup() {
     assert_output "Les acéphales"
 }
 
-@test "'fata list periods' returns every period in the directory" {
+@test "'fata list periods' returns nothing if there is no period in the directory" {
     run fata list periods
     assert_output ""
 }
