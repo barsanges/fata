@@ -96,6 +96,7 @@ list_keywords() {
     if [[ "${res}" != "" ]]; then
 	# shellcheck disable=SC2059
 	res=$(printf "${res}" | sort --dictionary-order --ignore-case | uniq)
+	# shellcheck disable=SC2059
 	printf "${res}\n"
     fi
 }
