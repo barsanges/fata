@@ -86,6 +86,20 @@ list_periods() {
     fi
 }
 
+list_keywords() {
+    res=""
+    shopt -s nullglob
+    for file in *.md; do
+	res+="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Para" ) ) | map( .c | map( select( .t == "Strong" ) | .c | map( if .t == "Str" then .c else " " end ) | add ) ) | .[] | .[]')"
+	res+="\n"
+    done
+    if [[ "${res}" != "" ]]; then
+	# shellcheck disable=SC2059
+	res=$(printf "${res}" | sort --dictionary-order --ignore-case | uniq)
+	printf "${res}\n"
+    fi
+}
+
 cmd_help()  {
     cmd_version
     echo
@@ -117,6 +131,7 @@ cmd_list()  {
     case "$1" in
 	focuses) shift;	  list_focuses ;;
 	periods) shift;	  list_periods ;;
+	keywords) shift;  list_keywords ;;
 	*)                echo "Argument inconnu '$*'" >&2 ; echo "Les commandes admissibles sont 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2 ; exit 1 ;;
     esac
 }
