@@ -101,14 +101,58 @@ list_keywords() {
     fi
 }
 
+list_all() {
+    content=""
+    shopt -s nullglob
+    for file in *.md; do
+	focus="$(get_focus "${file}")"
+	line="[\"${focus}\""
+	tmp="$(pandoc "${file}" -t json | jq -r '.blocks | [range(0; length) as $i | select(.[$i].t == "Header" and ( .[$i].c | .[0] == 2 ) ) | $i] | .[]')"
+	len="$(pandoc "${file}" -t json | jq -r '.blocks | length')"
+	if [[ "${tmp}" != "" ]]; then
+	    tmp="0"$'\n'"${tmp}"$'\n'"${len}"
+	else
+	    tmp="0"$'\n'"${len}"
+	fi
+	readarray -t periods_indexes <<< "${tmp}"
+	last=$((${#periods_indexes[@]}-2))
+	for i in $(seq 0 "${last}"); do
+	    # Chaque itération correspond à une période.
+	    kw="$(pandoc "${file}" -t json | jq -r --argjson a "${periods_indexes[${i}]}" --argjson b "${periods_indexes[${i}+1]}" '.blocks | [ range($a + 1; $b) as $i | .[$i] ] | map( select( .t == "Para" ) ) | map( .c | map( select( .t == "Strong" ) | .c | map( if .t == "Str" then .c else " " end ) | add ) ) | .[] | .[]')"
+	    if [[ "${kw}" != "" ]]; then
+		# shellcheck disable=SC2059
+		kw="$(printf "${kw}" | sort --dictionary-order --ignore-case | uniq | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
+	    fi
+	    line+=", \"${kw}\""
+	done
+	line+="]"
+	content+="${line}\n"
+    done
+    if [[ "${content}" != "" ]]; then
+	header="[\"Focus\", \"Chapeau\""
+	periods="$(get_periods "${file}")"
+	if [[ "${periods}" != "" ]]; then
+	    header+=", "
+	    # shellcheck disable=SC2059
+	    header+="$(printf "${periods}" | sed 's/.*/"&"/' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
+	fi
+	header+="]"
+	table="${header}\n${content}"
+	# shellcheck disable=SC2059
+	res="$(printf "${table}" | jq -r @tsv | pandoc --from tsv --to markdown)"
+	# shellcheck disable=SC2059
+	printf "${res}\n"
+    fi
+}
+
 cmd_help()  {
     cmd_version
     echo
     cat <<-_EOF
 Commandes :
-    fata list (periods|focuses|keywords)
+    fata list (periods|focuses|keywords|all)
         Liste les périodes, les focus ou les mots-clefs actuellement définis
-        dans le projet.
+        dans le projet, ou tout cela ensemble dans un tableau.
     fata help
         Affiche ce texte.
     fata version
@@ -124,7 +168,7 @@ cmd_version()  {
 
 cmd_list()  {
     if [[ -z "${1:-}" ]]; then
-	echo "Vous devez fournir un argument à 'fata list' : 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2
+	echo "Vous devez fournir un argument à 'fata list' : 'fata list focuses', 'fata list periods', 'fata list keywords' ou 'fata list all'" >&2
 	exit 1
     fi
 
@@ -133,7 +177,8 @@ cmd_list()  {
 	focuses) shift;	  list_focuses ;;
 	periods) shift;	  list_periods ;;
 	keywords) shift;  list_keywords ;;
-	*)                echo "Argument inconnu '$*'" >&2 ; echo "Les commandes admissibles sont 'fata list focuses', 'fata list periods' ou 'fata list keywords'" >&2 ; exit 1 ;;
+	all) shift;       list_all ;;
+	*)                echo "Argument inconnu '$*'" >&2 ; echo "Les commandes admissibles sont 'fata list focuses', 'fata list periods', 'fata list keywords' ou 'fata list all'" >&2 ; exit 1 ;;
     esac
 }
 
