@@ -18,11 +18,20 @@ setup() {
 
 @test "'fata list periods' returns every period in the directory" {
     run fata list periods
-    assert_output "Période archaïque"
+    assert_output "Période archaïque
+Période héroïque"
 }
 
 @test "'fata list keywords' returns every keyword in the directory" {
     run fata list keywords
     assert_output "Aeglos
-grand temple de Hurin"
+grand temple de Hurin
+Nargothrond"
+}
+
+@test "'fata list all' returns a table associating focuses, periods and keywords" {
+    run fata list all
+    assert_output "  Focus              Chapeau   Période archaïque               Période héroïque
+  ------------------ --------- ------------------------------- ------------------
+  Les cynocéphales             Aeglos, grand temple de Hurin   Nargothrond"
 }

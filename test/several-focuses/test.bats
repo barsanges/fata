@@ -33,3 +33,12 @@ illustre Boiteux des deux pieds
 Okéanos
 Pèléide"
 }
+
+@test "'fata list all' returns a table associating focuses, periods and keywords" {
+    run fata list all
+    assert_output "  Focus                         Chapeau           Période archaïque                             Période classique
+  ----------------------------- ----------------- --------------------------------------------- --------------------------------------------------------
+  L'empire des cyclopes         Hélios, Okéanos                                                 Hèphaistos
+  Les cynocéphales                                Hèphaistos, illustre Boiteux des deux pieds   illustre Boiteux des deux pieds
+  La république des sciapodes   Hèphaistos        Pèléide                                       Akhilleus, Hèphaistos, illustre Boiteux des deux pieds"
+}

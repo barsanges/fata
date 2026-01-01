@@ -28,3 +28,9 @@ setup() {
     assert_output "Erreur : les périodes de sciapodes.md (Période archaïque / Période classique) ne correspondent pas à celles de cynocéphales.md (Période héroïque / Période classique)"
     assert_failure
 }
+
+@test "'fata list all' fails if the periods are mixed up" {
+    run fata list all
+    assert_output "Erreur : les périodes de sciapodes.md (Période archaïque / Période classique) ne correspondent pas à celles de cynocéphales.md (Période héroïque / Période classique)"
+    assert_failure
+}

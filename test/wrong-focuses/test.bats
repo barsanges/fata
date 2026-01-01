@@ -28,3 +28,9 @@ setup() {
     assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
     assert_failure
 }
+
+@test "'fata list all' fails if there are several focuses within the same file" {
+    run fata list all
+    assert_output "Erreur : le fichier wrong.md doit contenir exactement un focus"
+    assert_failure
+}

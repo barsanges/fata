@@ -28,3 +28,9 @@ setup() {
     assert_output "Erreur : le fichier periods.md doit contenir exactement un focus"
     assert_failure
 }
+
+@test "'fata list all' fails if there is no focus within a file" {
+    run fata list all
+    assert_output "Erreur : le fichier periods.md doit contenir exactement un focus"
+    assert_failure
+}

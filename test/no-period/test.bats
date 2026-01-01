@@ -25,3 +25,10 @@ setup() {
     run fata list keywords
     assert_output "temple d’Apollon"
 }
+
+@test "'fata list all' returns a table associating focuses, periods and keywords" {
+    run fata list all
+    assert_output "  Focus           Chapeau
+  --------------- ------------------
+  Les acéphales   temple d'Apollon"
+}
