@@ -65,11 +65,10 @@ list_focuses() {
     shopt -s nullglob
     for file in *.md; do
 	data=$(get_focus "${file}")
-	res+="${data}\n"
+	res+="${data}"$'\n'
     done
     if [[ "${res}" != "" ]]; then
-	# shellcheck disable=SC2059
-	printf "${res}"
+	printf '%s\n' "${res}"
     fi
 }
 
@@ -81,8 +80,7 @@ list_periods() {
 	break
     done
     if [[ "${res}" != "" ]]; then
-	# shellcheck disable=SC2059
-	printf "${res}\n"
+	printf '%s\n' "${res}"
     fi
 }
 
@@ -91,13 +89,11 @@ list_keywords() {
     shopt -s nullglob
     for file in *.md; do
 	res+="$(pandoc "${file}" -t json | jq -r '.blocks | map( select( .t == "Para" ) ) | map( .c | map( select( .t == "Strong" ) | .c | map( if .t == "Str" then .c else " " end ) | add ) ) | .[] | .[]')"
-	res+="\n"
+	res="${res}"$'\n'
     done
     if [[ "${res}" != "" ]]; then
-	# shellcheck disable=SC2059
-	res=$(printf "${res}" | sort --dictionary-order --ignore-case | uniq)
-	# shellcheck disable=SC2059
-	printf "${res}\n"
+	res=$(printf '%s' "${res}" | sort --dictionary-order --ignore-case | uniq)
+	printf '%s\n' "${res}"
     fi
 }
 
@@ -120,28 +116,24 @@ list_all() {
 	    # Chaque itération correspond à une période.
 	    kw="$(pandoc "${file}" -t json | jq -r --argjson a "${periods_indexes[${i}]}" --argjson b "${periods_indexes[${i}+1]}" '.blocks | [ range($a + 1; $b) as $i | .[$i] ] | map( select( .t == "Para" ) ) | map( .c | map( select( .t == "Strong" ) | .c | map( if .t == "Str" then .c else " " end ) | add ) ) | .[] | .[]')"
 	    if [[ "${kw}" != "" ]]; then
-		# shellcheck disable=SC2059
-		kw="$(printf "${kw}" | sort --dictionary-order --ignore-case | uniq | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
+		kw="$(printf '%s' "${kw}" | sort --dictionary-order --ignore-case | uniq | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
 	    fi
 	    line+=", \"${kw}\""
 	done
 	line+="]"
-	content+="${line}\n"
+	content+="${line}"$'\n'
     done
     if [[ "${content}" != "" ]]; then
 	header="[\"Focus\", \"Chapeau\""
 	periods="$(get_periods "${file}")"
 	if [[ "${periods}" != "" ]]; then
 	    header+=", "
-	    # shellcheck disable=SC2059
-	    header+="$(printf "${periods}" | sed 's/.*/"&"/' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
+	    header+="$(printf '%s' "${periods}" | sed 's/.*/"&"/' | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')"
 	fi
 	header+="]"
-	table="${header}\n${content}"
-	# shellcheck disable=SC2059
-	res="$(printf "${table}" | jq -r @tsv | pandoc --from tsv --to markdown)"
-	# shellcheck disable=SC2059
-	printf "${res}\n"
+	table="${header}"$'\n'"${content}"
+	res="$(printf '%s' "${table}" | jq -r @tsv | pandoc --from tsv --to markdown)"
+	printf '%s\n' "${res}"
     fi
 }
 
