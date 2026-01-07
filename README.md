@@ -4,6 +4,7 @@ Fata est un utilitaire basique pour aider à la construction
 d'histoires fictives - au sens de "déroulé d'événements généraux", pas
 au sens de "récit".
 
+
 En sollicitant des questions simples via la commande `fata ask`,
 l'utilisateur est amené à rédiger progressivement un corpus de
 fichiers Markdown.
@@ -38,16 +39,15 @@ identifier des focus, des périodes et des mots-clefs :
   dans les Markdown ; ce sont des périodes historiques ;
 
 * les *mots-clefs* sont les mots mis en gras (`**mot**`) dans les
-  Markdown. Ils permettent d'identifier des éléments notables, qui
-  peuvent alimenter certaines questions.
+  Markdown. Ils permettent d'identifier des éléments notables.
 
 Via la commande `fata ask`, l'outil croise la banque des questions
-génériques et la liste des focus, des périodes et des mots-clefs pour
-sélectionner aléatoirement une question qui n'a pas déjà été
-posée. Cette question peut être totalement générique mais, dans la
-plupart des cas, elle fera intervenir au moins un focus et une
-période. Il est aussi possible d'avoir des questions sur plusieurs
-focus, plusieurs périodes, ou utilisant des mots-clefs.
+génériques et la liste des focus et des périodes pour sélectionner
+aléatoirement une question qui n'a pas déjà été posée. Cette question
+peut être totalement générique mais, dans la plupart des cas, elle
+fera intervenir un focus et / ou une période. Contrairement aux focus
+et aux périodes, les mots-clefs ne sont pas utilisés dans les
+questions par Fata : ils ne servent qu'à l'utilisateur.
 
 L'utilisateur "répond" à la question en rédigeant directement dans les
 Markdown. Il faut toutefois noter qu'aucun contrôle n'est effectué par
@@ -73,3 +73,19 @@ fichiers Markdown. Toutefois, il est aussi possible de modifier à la
 main les fichiers `banque.json` (par exemple pour ajouter ou supprimer
 des questions génériques) et `questions-posées.json` (par exemple pour
 ajouter une question à laquelle on a incidemment déjà répondu).
+
+### Syntaxe des questions
+
+Le fichier `banque.json` contient une liste de chaînes de caractères :
+chaque chaîne de caractères est une question. La question est posée
+telle quelle par Fata, à l'exception de deux sous-chaînes de
+caractères qui sont remplacées par des données du dossier :
+
+* `{{ focus }}`, qui sera remplacée par un des focus du dossier ;
+
+* `{{ period }}`, qui sera remplacée par une des périodes du dossier.
+
+Une question contient au plus une période et / ou un focus. Cela
+signifie que, en l'état, Fata n'est pas en mesure de poser des
+questions qui feraient intervenir plusieurs focus et / ou plusieurs
+périodes.
