@@ -18,6 +18,7 @@ check_dir() {
 	echo "Utilisez 'fata init' pour le transformer en un répertoire exploitable par Fata" >&2
 	exit 1
     fi
+    check_md
 }
 
 get_focus() {
@@ -164,7 +165,6 @@ cmd_list()  {
 	exit 1
     fi
 
-    check_md
     case "$1" in
 	focuses) shift;	  list_focuses ;;
 	periods) shift;	  list_periods ;;
