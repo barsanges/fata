@@ -9,6 +9,14 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+    # Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
+}
+
+teardown() {
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list focuses' returns every focus in the directory" {
@@ -31,4 +39,15 @@ setup() {
     assert_output "  Focus           Chapeau
   --------------- ------------------
   Les acéphales   temple d'Apollon"
+}
+
+@test "'fata ask' returns a question which has not been asked already" {
+    run fata ask
+    assert_output "L'histoire de 'Les acéphales' est-elle traversée par des dilemmes fondamentaux ? Si oui, lesquels ?"
+
+    expected="L'histoire de 'Les acéphales' est-elle traversée par des dilemmes fondamentaux ? Si oui, lesquels ?
+Quels mythes entourent la fondation de 'Les acéphales' ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
 }

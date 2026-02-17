@@ -9,6 +9,14 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+    # Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
+}
+
+teardown() {
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list focuses' returns every focus in the directory" {
@@ -41,4 +49,47 @@ Pèléide"
   L'empire des cyclopes         Hélios, Okéanos                                                 Hèphaistos
   Les cynocéphales                                Hèphaistos, illustre Boiteux des deux pieds   illustre Boiteux des deux pieds
   La république des sciapodes   Hèphaistos        Pèléide                                       Akhilleus, Hèphaistos, illustre Boiteux des deux pieds"
+}
+
+@test "'fata ask' asks a new question" {
+    run fata ask
+    run fata ask
+    run fata ask
+    run fata ask
+    run fata ask
+    assert_success
+
+    expected="Pendant 'Période archaïque', le pouvoir dans 'La république des sciapodes' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', le pouvoir dans 'Les cynocéphales' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', le pouvoir dans 'L’empire des cyclopes' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', y a-t-il des sociétés dominantes et des sociétés marginalisées ?
+Pendant 'Période classique', le pouvoir dans 'La république des sciapodes' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', le pouvoir dans 'Les cynocéphales' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', le pouvoir dans 'L’empire des cyclopes' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', y a-t-il des sociétés dominantes et des sociétés marginalisées ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
+}
+
+@test "'fata ask' fails if there is no question to ask" {
+    run fata ask
+    run fata ask
+    run fata ask
+    run fata ask
+    run fata ask
+    run fata ask
+    assert_failure
+
+    expected="Pendant 'Période archaïque', le pouvoir dans 'La république des sciapodes' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', le pouvoir dans 'Les cynocéphales' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', le pouvoir dans 'L’empire des cyclopes' est-il centralisé ou fragmenté ?
+Pendant 'Période archaïque', y a-t-il des sociétés dominantes et des sociétés marginalisées ?
+Pendant 'Période classique', le pouvoir dans 'La république des sciapodes' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', le pouvoir dans 'Les cynocéphales' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', le pouvoir dans 'L’empire des cyclopes' est-il centralisé ou fragmenté ?
+Pendant 'Période classique', y a-t-il des sociétés dominantes et des sociétés marginalisées ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
 }

@@ -146,6 +146,8 @@ Commandes :
     fata list (periods|focuses|keywords|all)
         Liste les périodes, les focus ou les mots-clefs actuellement définis
         dans le projet, ou tout cela ensemble dans un tableau.
+    fata ask
+        Pose une question au hasard à partir du fichier 'banque.json'.
     fata help
         Affiche ce texte.
     fata version
@@ -174,6 +176,54 @@ cmd_list()  {
     esac
 }
 
+cmd_ask() {
+    base_questions="$(jq -r '.[]' banque.json)"
+
+    all_periods="$(list_periods)"
+    all_focuses="$(list_focuses)"
+
+    all_questions=""
+    if [[ ${all_periods} != "" ]]; then
+	# Le dossier contient au moins une période.
+	while read -r raw_question; do
+	    while read -r period; do
+	        while read -r focus; do
+		    # shellcheck disable=SC2001
+		    question=$(echo "${raw_question}" | sed "s/{{ period }}/'${period}'/g")
+		    # shellcheck disable=SC2001
+		    question=$(echo "${question}" | sed "s/{{ focus }}/'${focus}'/g")
+		    all_questions+="${question}"$'\n'
+		done< <(echo -e "${all_focuses}")
+	    done< <(echo -e "${all_periods}")
+	done < <(echo -e "${base_questions}")
+    else
+	# Le dossier ne contient aucune période.
+	while read -r raw_question; do
+	    # On filtre les questions qui contiennent "{{ period }}"
+	    if [[ "${raw_question}" != *"{{ period }}"* ]]; then
+	        while read -r focus; do
+		    # shellcheck disable=SC2001
+		    question=$(echo "${raw_question}" | sed "s/{{ focus }}/'${focus}'/g")
+		    all_questions+="${question}"$'\n'
+		done< <(echo -e "${all_focuses}")
+	    fi
+	done < <(echo -e "${base_questions}")
+    fi
+
+    all_questions=$(echo "${all_questions}" | uniq)
+    asked="$(jq -r '.[]' questions-posées.json)"
+    askable="$(echo "${all_questions}" | grep -x -v -F -e "${asked}")"
+    if [[ ${askable} != "" ]]; then
+	last="$(echo "${askable}" | shuf | head -n 1)"
+	echo "${last}"
+	asked+=$'\n'"${last}"
+	echo "${asked}" | jq --raw-input . | jq --slurp . > questions-posées.json
+    else
+	echo "Aucune question à poser !" >&2
+	exit 1
+    fi
+}
+
 cmd_unknown() {
     echo "Commande inconnue '$*'" >&2
     echo "Tapez 'fata help' pour voir la liste des commandes disponibles" >&2
@@ -189,6 +239,7 @@ case "$1" in
 	help|--help) shift;		cmd_help "$@" ;;
 	version|--version) shift;	cmd_version "$@" ;;
 	list) shift;                    check_dir; cmd_list "$@" ;;
+	ask) shift;                     check_dir; cmd_ask ;;
 	*)				cmd_unknown "$@" ;;
 esac
 exit 0

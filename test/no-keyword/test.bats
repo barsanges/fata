@@ -9,6 +9,14 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+    # Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
+}
+
+teardown() {
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list focuses' returns every focus in the directory" {
@@ -31,4 +39,14 @@ setup() {
     assert_output "  Focus              Chapeau   Période archaïque
   ------------------ --------- -------------------
   Les cynocéphales             "
+}
+
+@test "'fata ask' ignores questions for which elements are missing" {
+    run fata ask
+    assert_output "Aucune question à poser !"
+
+    expected="Pendant 'Période archaïque', quel est le régime politique de 'Les cynocéphales' ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
 }

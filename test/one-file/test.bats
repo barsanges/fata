@@ -9,6 +9,14 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+    # Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
+}
+
+teardown() {
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list focuses' returns every focus in the directory" {
@@ -34,4 +42,27 @@ Nargothrond"
     assert_output "  Focus              Chapeau   Période archaïque               Période héroïque
   ------------------ --------- ------------------------------- ------------------
   Les cynocéphales             Aeglos, grand temple de Hurin   Nargothrond"
+}
+
+@test "'fata ask' asks a new question" {
+    run fata ask
+    assert_output "Pendant 'Période archaïque', quel est le régime politique de 'Les cynocéphales' ?"
+
+    expected="Pendant 'Période archaïque', quel est le régime politique de 'Les cynocéphales' ?
+Pendant 'Période héroïque', quel est le régime politique de 'Les cynocéphales' ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
+}
+
+@test "'fata ask' fails if there is no question to ask" {
+    run fata ask
+    run fata ask
+    assert_failure
+
+    expected="Pendant 'Période archaïque', quel est le régime politique de 'Les cynocéphales' ?
+Pendant 'Période héroïque', quel est le régime politique de 'Les cynocéphales' ?"
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
 }

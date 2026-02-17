@@ -19,6 +19,8 @@ Commandes :
     fata list (periods|focuses|keywords|all)
         Liste les périodes, les focus ou les mots-clefs actuellement définis
         dans le projet, ou tout cela ensemble dans un tableau.
+    fata ask
+        Pose une question au hasard à partir du fichier 'banque.json'.
     fata help
         Affiche ce texte.
     fata version

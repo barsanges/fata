@@ -9,6 +9,14 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+    # Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
+}
+
+teardown() {
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list focuses' returns nothing if there is no focus" {
@@ -29,4 +37,14 @@ setup() {
 @test "'fata list all' returns nothing if there is no focus" {
     run fata list all
     assert_output ""
+}
+
+@test "'fata ask' returns nothing if there is no question to ask" {
+    run fata ask
+    assert_output "Aucune question à poser !"
+
+    expected=""
+
+    actual=$(jq -r '.[]' questions-posées.json | sort)
+    assert_equal "${actual}" "${expected}"
 }
