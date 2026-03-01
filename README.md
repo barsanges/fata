@@ -9,6 +9,20 @@ En sollicitant des questions simples via la commande `fata ask`,
 l'utilisateur est amené à rédiger progressivement un corpus de
 fichiers Markdown.
 
+## Installation
+
+Fata est constitué d'un unique script Bash. Pour l'installer, il
+suffit donc de télécharger [`src/fata`](src/fata), par exemple :
+```bash
+curl https://raw.githubusercontent.com/barsanges/fata/refs/heads/main/src/fata > fata
+chmod +x fata
+```
+
+Pour fonctionner, ce script nécessite par ailleurs
+[`jq`](https://jqlang.org/) et [`pandoc`](https://pandoc.org/). Il a
+été testé et fonctionne avec la version 1.7 de `jq` et la version
+3.1.3 de `pandoc`.
+
 ## Fonctionnement
 
 Fata travaille sur des fichiers présents dans un même dossier. On
