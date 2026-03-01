@@ -213,10 +213,14 @@ cmd_ask() {
     all_questions=$(echo "${all_questions}" | uniq)
     asked="$(jq -r '.[]' questions-posées.json)"
     askable="$(echo "${all_questions}" | grep -x -v -F -e "${asked}")"
-    if [[ ${askable} != "" ]]; then
+    if [[ "${askable}" != "" ]]; then
 	last="$(echo "${askable}" | shuf | head -n 1)"
 	echo "${last}"
-	asked+=$'\n'"${last}"
+	if [[ "${asked}" == "" ]]; then
+	    asked="${last}"
+	else
+	    asked+=$'\n'"${last}"
+	fi
 	echo "${asked}" | jq --raw-input . | jq --slurp . > questions-posées.json
     else
 	echo "Aucune question à poser !" >&2
