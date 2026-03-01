@@ -16,6 +16,8 @@ setup() {
     assert_output "Fata 0.0.1
 
 Commandes :
+    fata init
+        Transforme le dossier courant en un dossier Fata.
     fata list (periods|focuses|keywords|all)
         Liste les périodes, les focus ou les mots-clefs actuellement définis
         dans le projet, ou tout cela ensemble dans un tableau.
