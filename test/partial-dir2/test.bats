@@ -9,15 +9,19 @@ setup() {
     # make executables in src/ visible to PATH
     PATH="$DIR/../../src:$PATH"
     cd "$DIR"
+
+# Sauvegarde le fichier des questions :
+    cp questions-posées.json ref-questions-posées.json
 }
 
 teardown() {
     rm -f banque.json
-    rm -f questions-posées.json
+    # Annule les modifications apportées au fichier des questions :
+    mv ref-questions-posées.json questions-posées.json
 }
 
 @test "'fata list' fails in a non-Fata directory" {
-    run fata list focuses
+    run fata list keywords
     assert_failure
 }
 
@@ -30,7 +34,7 @@ teardown() {
 @test "'fata list' succeeds if the directory has been turned into a Fata directory" {
     run fata init
     run fata list focuses
-    assert_output "Les cynocéphales"
+    assert_output "Narragonie"
 }
 
 @test "'fata ask' succeeds if the directory has been turned into a Fata directory" {

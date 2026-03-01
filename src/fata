@@ -143,6 +143,8 @@ cmd_help()  {
     echo
     cat <<-_EOF
 Commandes :
+    fata init
+        Transforme le dossier courant en un dossier Fata.
     fata list (periods|focuses|keywords|all)
         Liste les périodes, les focus ou les mots-clefs actuellement définis
         dans le projet, ou tout cela ensemble dans un tableau.
@@ -159,6 +161,46 @@ _EOF
 
 cmd_version()  {
     echo "Fata 0.0.1"
+}
+
+cmd_init()  {
+    if [[ ! -f banque.json ]]; then
+	cat <<-_EOF > banque.json
+[
+    "Pendant {{ period }}, comment {{focus }} se définit-il lui-même et comment est-il perçu par les autres ?",
+    "Pendant {{ period }}, quelles différences majeures existe-t-il entre {{ focus }} et {{ focus }} ?",
+    "Pendant {{ period }}, y a-t-il des sociétés dominantes et des sociétés marginalisées ?",
+    "Pendant {{ period }}, quel est le régime politique de {{ focus }} ?",
+    "Pendant {{ period }}, le pouvoir dans {{ focus }} est-il centralisé ou fragmenté ?",
+    "Pendant {{ period }}, sur quoi repose la légitimité du pouvoir dans {{ focus }} ?",
+    "Pendant {{ period }}, quels sont les conflits de pouvoir majeurs, ouverts ou latents, impliquant {{ focus }} ?",
+    "Pendant {{ period }}, comment les populations de {{ focus }} réagissent-elles à l’autorité (adhésion, résignation, résistance) ?",
+    "Pendant {{ period }}, quelles activités économiques structurent la société de {{ focus }} ?",
+    "Pendant {{ period }}, existe-t-il des innovations récentes ou des pertes de savoir ancien ?",
+    "Pendant {{ period }}, comment les richesses circulent-elles et qui les contrôle ?",
+    "Pendant {{ period }}, dans {{ focus }}, les inégalités matérielles sont-elles visibles et acceptées ?",
+    "Pendant {{ period }}, quelle place occupent les mythes fondateurs dans la culture commune de {{ focus }} ?",
+    "Pendant {{ period }}, quelle est la religion de {{ focus }} ?",
+    "Pendant {{ period }}, dans {{ focus }}, la religion ou la croyance influence-t-elle le pouvoir politique et social ?",
+    "Pendant {{ period }}, y a-t-il des hérésies, des schismes ou des remises en cause du sacré ?",
+    "Pendant {{ period }}, des traumatismes collectifs marquent-ils {{ focus }} ?",
+    "Pour {{ focus }}, {{ period }} correspond à un moment de stabilité, de crise ou de transition ?",
+    "Pendant {{ period }}, dans {{ focus }}, quelle est la place de l’individu face aux structures collectives ?",
+    "Pendant {{ period }}, dans {{ focus }}, quels rôles sociaux sont valorisés ou méprisés ?",
+    "Pendant {{ period }}, dans {{ focus }}, l’ascension sociale est-elle possible, et à quelles conditions ?",
+    "Pendant {{ period }}, dans {{ focus }}, comment le passé est-il conservé (archives, traditions orales, monuments) ?",
+    "Pendant {{ period }}, dans {{ focus }}, quelles périodes passées sont idéalisées ou au contraire occultées ?",
+    "Pendant {{ period }}, y a-t-il des vérités historiques perdues ou falsifiées ?",
+    "Pendant {{ period }}, dans {{ focus }}, le passé est-il une source d’inspiration ou un fardeau ?",
+    "Pendant {{ period }}, dans {{ focus }}, qui a accès au savoir historique et pourquoi ?",
+    "Pendant {{ period }}, des évolutions majeures sont-elles possibles ou inévitables ? Si oui, lesquelles ?",
+    "L'histoire de {{ focus }} est-elle traversée par des dilemmes fondamentaux ? Si oui, lesquels ?"
+]
+_EOF
+    fi
+    if [[ ! -f questions-posées.json ]]; then
+	echo "[]" > questions-posées.json
+    fi
 }
 
 cmd_list()  {
@@ -242,6 +284,7 @@ fi
 case "$1" in
 	help|--help) shift;		cmd_help "$@" ;;
 	version|--version) shift;	cmd_version "$@" ;;
+	init) shift;                    cmd_init "$@" ;;
 	list) shift;                    check_dir; cmd_list "$@" ;;
 	ask) shift;                     check_dir; cmd_ask ;;
 	*)				cmd_unknown "$@" ;;

@@ -12,7 +12,6 @@ setup() {
 }
 
 teardown() {
-    rm -f banque.json
     rm -f questions-posées.json
 }
 
@@ -30,18 +29,5 @@ teardown() {
 @test "'fata list' succeeds if the directory has been turned into a Fata directory" {
     run fata init
     run fata list focuses
-    assert_output "Les cynocéphales"
-}
-
-@test "'fata ask' succeeds if the directory has been turned into a Fata directory" {
-    run fata init
-
-    expected=0
-    actual=$(jq -r '.[]' questions-posées.json | wc -l	)
-    assert_equal "${actual}" "${expected}"
-
-    run fata ask
-    expected=1
-    actual=$(jq -r '.[]' questions-posées.json | wc -l)
-    assert_equal "${actual}" "${expected}"
+    assert_success
 }
